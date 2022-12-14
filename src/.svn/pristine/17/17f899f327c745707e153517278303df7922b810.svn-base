@@ -1,0 +1,33 @@
+/*!\file CTrieEnc.cpp
+ * \brief
+ *
+ *  Created on: 19.06.2019
+ *      Author: tombr
+ */
+
+#include "CTrieEnc.hpp"
+
+CTrieEnc::CTrieEnc() {
+	for(int i = 0; i < LZW_DICT_SIZE; i++) {
+		if(i < 256) {
+			m_symbolTable[i].setParent(-1);
+			m_symbolTable[i].setSymbol(intToString(i));
+		}
+		else
+			m_symbolTable[i].setParent(-2);
+	}
+}
+
+CTrieEnc::~CTrieEnc() {
+}
+
+vector<unsigned int> encoder(string& a) {
+	vector<unsigned int> encoded;
+	string::iterator it;
+
+	for(it = a.begin(); it != a.end(); it++) {
+
+	}
+
+	return encoded;
+}

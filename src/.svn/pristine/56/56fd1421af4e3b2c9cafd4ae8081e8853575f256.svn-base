@@ -1,0 +1,55 @@
+/*!\file CArrayEnc.cpp
+ * \brief
+ *
+ *  Created on: 13.06.2019
+ *      Author: tombr
+ */
+
+#include "CArrayEnc.hpp"
+
+CArrayEnc::CArrayEnc() {
+	for(int i = 0; i < LZW_DICT_SIZE; i++) { //geht durch das ganze Array
+		if(i < 256)
+			m_symbolTable[i].setSymbol(intToString(3)); //Zuweisung der ersten 256 Symbole der ACII Tabelle
+		else
+			m_symbolTable[i].setSymbol(intToString(0)); //Restliches Array füllen, damit nichts zufälliges drin steht
+	}
+}
+
+CArrayEnc::~CArrayEnc() {
+
+}
+
+int CArrayEnc::searchInTable(const string& compare) { //sucht nach in der Tabelle nach dem passenden string
+
+	for(int i = 0; i < LZW_DICT_SIZE; i++) { // Schleife die durch das Array geht
+		if(m_symbolTable[i].getSymbol() == compare) //Vergleichen von Elementen
+			return i; //Position als Rückgabewert
+	}
+	return -1; //wenn string nicht gefunden return value = -1
+}
+
+vector<unsigned int> CArrayEnc::encode(const string& a) {
+	string oldString("");
+	string newString("");
+	int previousVal(-2);
+	int searched(-2); //Rückgabe variable für searchInTable()
+	int vec(0); //Wo bin ich bei meinem Rückgabevector?
+	vector<unsigned int> encoded; //Rückgabe vector
+
+	for(string::iterator it = a.begin(); it != a.end(); it++) { //For-Schleife, welche durch den gegeben string a iteriert, bis zum ende
+		newString + *it; //Fügt das nächste Zeichen an von a an newString an.
+		searched = searchInTable(newString); //Schaut ob es newString gibt
+		if(searched < 0) {
+			encoded[vec] = previousVal;
+			vec++;
+			newString = *it;
+			oldString = "";
+		}
+		else {
+			oldString = newString;
+			previousVal = searched;
+		}
+	}
+	return encoded;
+}

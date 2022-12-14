@@ -1,0 +1,34 @@
+/*!\file CArrayEnc.cpp
+ * \brief
+ *
+ *  Created on: 13.06.2019
+ *      Author: tombr
+ */
+
+#include "CArrayEnc.hpp"
+
+CArrayEnc::CArrayEnc() {
+	for(int i = 0; i < LZW_DICT_SIZE; i++) {
+		if(i < 256)
+			m_symbolTable[i].setSymbol(intToString(3)); //Zuweisung der ersten 256 Symbole der ACII Tabelle
+		else
+			m_symbolTable[i].setSymbol(intToString(0)); //Restliches Array füllen, damit nichts zufälliges drin steht
+	}
+}
+
+CArrayEnc::~CArrayEnc() {
+
+}
+
+int CArrayEnc::searchInTable(const string& compare) { //sucht nach in der Tabelle nach dem passenden string
+
+	for(int i = 0; i < LZW_DICT_SIZE; i++) { // Schleife die durch das Array geht
+		if(m_symbolTable[i].getSymbol() == compare) //Vergleichen von Elementen
+			return i; //Position als Rückgabewert
+	}
+	return -1; //wenn string nicht gefunden return value = -1
+}
+
+/*vector<unsigned int> CArrayEnc::encode(const string& a) {
+	return 0;
+}*/

@@ -1,0 +1,29 @@
+/*!\file CArrayEnc.hpp
+ * \brief
+ *
+ *  Created on: 13.06.2019
+ *      Author: tombr
+ */
+
+#ifndef CARRAYENC_HPP_
+#define CARRAYENC_HPP_
+
+#include "CEnc.hpp"
+#include "Array/CArray.hpp"
+#include "Entry/CEntry.hpp"
+
+
+/*!
+ *
+ */
+class CArrayEnc: public CEnc {
+public:
+	CArrayEnc();
+	virtual ~CArrayEnc();
+	int searchInTable(const string&) const;
+
+private:
+	CArray<CEntry, LZW_DICT_SIZE> m_symbolTable;
+};
+
+#endif /* CARRAYENC_HPP_ */

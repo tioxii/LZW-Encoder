@@ -1,0 +1,76 @@
+/*!\file CTrieEnc.cpp
+ * \brief
+ *
+ *  Created on: 19.06.2019
+ *      Author: tombr
+ */
+
+#include "CTrieEnc.hpp"
+
+CTrieEnc::CTrieEnc() {
+	for(int i = 0; i < LZW_DICT_SIZE; i++) {
+		if(i < 256) {
+			m_symbolTable[i].setParent(-1);
+			m_symbolTable[i].setSymbol(intToString(i));
+		}
+		else
+			m_symbolTable[i].setParent(-2);
+	}
+}
+
+CTrieEnc::~CTrieEnc() {
+}
+
+vector<unsigned int> CTrieEnc::encode(const string& a) {
+	CForwardCounter attemptCounter; 						//counter für rehashing Versuche
+	string myString("");
+	bool hashAgain(true);
+	unsigned int hashPos(0);
+	unsigned int parentPos(0);
+	CDoubleHashing& hash = CDoubleHashing::getInstance();   //Hashing instance
+	vector<unsigned int> encoded;							//Ausgabevektor
+	string::const_iterator it = a.begin();							//iterator
+
+
+	myString = *it;
+	if(myString != "") {
+		it++;
+
+		for(; it != a.end(); it++) {
+			if(myString.length() == 1) {
+				parentPos = static_cast<int> (static_cast<char> (*(myString.begin())));
+			}
+			attemptCounter.setValue(0);
+			hashAgain = true;
+			while(hashAgain) {
+				hashPos = hash.hash(parentPos, static_cast<int> (static_cast<char> (*it)), LZW_DICT_SIZE, static_cast<unsigned int> (attemptCounter.getValue()));
+
+				if(m_symbolTable[hashPos].getParent() == -2) {
+					cout << hashPos << " ";
+					m_symbolTable[hashPos].setSymbol(myString + *it);
+					cout << myString + *it << " ";
+					m_symbolTable[hashPos].setParent(parentPos);
+					cout << parentPos << endl;
+					encoded.push_back(parentPos);
+					myString = *it;
+					hashAgain = false;
+				}
+				else {
+					if(m_symbolTable[hashPos].getSymbol() == myString + *it) {
+						myString += *it;
+						parentPos = hashPos;
+						hashAgain = false;
+					}
+					else {
+						if(m_symbolTable[hashPos].getSymbol() != myString + *it) {
+							hashAgain = true;
+							attemptCounter.count();
+						}
+					}
+
+				}
+			}
+		}
+	}
+	return encoded;
+}

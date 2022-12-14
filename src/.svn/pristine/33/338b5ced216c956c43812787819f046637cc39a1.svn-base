@@ -1,0 +1,66 @@
+#include "CArray.hpp"
+/*#include "CEntry.hpp"*/
+#include <iostream>
+#include <string>
+#include "gtest/gtest.h"
+#include "CArrayEnc.hpp"
+#include "CArrayDec.hpp"
+
+
+
+TEST(CArrayTest, Exception) {
+	CArray<int, 10> dict;
+	EXPECT_THROW(dict[10], XOutOfBounds) << "Exception wird bei zu grossem Index nicht geworfen!";
+}
+
+int main(int argc, char** argv) {
+	CArrayEnc encoder;
+	CArrayDec decoder;
+
+	vector<unsigned int> lol = encoder.encode("Mississippi");
+
+	for (vector<unsigned int>::iterator it = lol.begin(); it != lol.end(); it++) {
+		cout << *it << " ";
+	}
+	cout << endl;
+
+	cout << decoder.decode(lol) << std::endl;
+	cout << endl;
+
+	encoder.printSymbolTable(256);
+	decoder.printSymbolTable(256);
+
+
+	/*testing::InitGoogleTest(&argc, argv);
+	int ret = RUN_ALL_TESTS();
+	return ret;*/
+
+	/*CArray<int,5> myArray;
+
+	for(int i = 0; i < 5; i++) {
+		myArray[i] = i;
+	}
+
+	CArray<int, 5> myArray2;
+	myArray2 = myArray;
+
+	std::cout << myArray[3] << " " << myArray2[3] << std::endl;
+
+	myArray2[3] = 2;
+
+	std::cout << myArray[3] << " " << myArray2[3] << std::endl;
+
+	std::cout << myArray[5] << std::endl;*/
+
+	/*cout << CEntry::getNumber() << std::endl;
+
+	CEntry entry1;
+
+	cout << CEntry::getNumber() << std::endl;
+
+	CEntry entry2;
+
+	cout << CEntry::getNumber() << std::endl;
+	*/
+	return 0;
+}

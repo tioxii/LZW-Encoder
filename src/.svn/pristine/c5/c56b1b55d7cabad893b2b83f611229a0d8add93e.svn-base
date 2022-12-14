@@ -1,0 +1,27 @@
+/*!\file CTrieEnc.hpp
+ * \brief
+ *
+ *  Created on: 19.06.2019
+ *      Author: tombr
+ */
+
+#ifndef CTRIEENC_HPP_
+#define CTRIEENC_HPP_
+
+#include "CEnc.hpp"
+#include <string>
+#include <vector>
+
+/*!
+ *
+ */
+class CTrieEnc: public CEnc {
+public:
+	CTrieEnc();
+	virtual ~CTrieEnc();
+	vector<unsigned int> encoder(string& a);
+private:
+	CArray<CKnot, LZW_DICT_SIZE> m_symbolTable;
+};
+
+#endif /* CTRIEENC_HPP_ */

@@ -1,0 +1,65 @@
+/*!\file CTrieDec.cpp
+ * \brief
+ *
+ *  Created on: 21.06.2019
+ *      Author: tombr
+ */
+
+#include "CTrieDec.hpp"
+
+CTrieDec::CTrieDec() {
+	for(int i = 0; i < LZW_DICT_SIZE; i++) {
+		if(i < 256) {
+			m_symbolTable[i].setParent(-1);
+			m_symbolTable[i].setSymbol(intToString(i));
+		}
+		else
+			m_symbolTable[i].setParent(-2);
+	}
+}
+
+CTrieDec::~CTrieDec() {
+
+}
+
+string CTrieDec::decode(const vector<unsigned int>& encoded) {
+	string decoded("");
+	string newString("");
+	string newSymbol("");
+	CDoubleHashing& hash = CDoubleHashing::getInstance();
+	CForwardCounter attemptCounter;
+	bool hashAgain(true);
+	unsigned int hashPos(0);
+	unsigned int parentPos(0);
+	vector<unsigned int>::const_iterator it(encoded.begin());
+
+	//ersten String blind einlesen
+	decoded += m_symbolTable[*it].getSymbol();
+	parentPos = *it;
+	it++;
+
+	for(; it != encoded.end(); it++) {
+		if(parentPos == *it) {
+
+		}
+		newSymbol = *((m_symbolTable[*it].getSymbol()).begin());
+		decoded += m_symbolTable[*it].getSymbol();
+
+		attemptCounter.setValue(0);
+		hashAgain = true;
+
+		while(hashAgain) {
+			hashPos = hash.hash(parentPos, static_cast<int> (static_cast<char>(*newSymbol.begin())), LZW_DICT_SIZE, attemptCounter.getValue());
+
+			if(m_symbolTable[hashPos].getParent() == -2) {
+				m_symbolTable[hashPos].setSymbol(m_symbolTable[parentPos].getSymbol() + newSymbol);
+				m_symbolTable[hashPos].setParent(parentPos);
+				hashAgain = false;
+			} else {
+				hashAgain = true;
+				attemptCounter.count();
+			}
+		}
+	}
+	return decoded;
+}

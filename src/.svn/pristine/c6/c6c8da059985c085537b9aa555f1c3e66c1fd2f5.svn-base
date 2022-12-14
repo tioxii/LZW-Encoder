@@ -1,0 +1,82 @@
+#include "CArray.hpp"
+/*#include "CEntry.hpp"*/
+#include <iostream>
+#include <string>
+#include "gtest/gtest.h"
+#include "CArrayEnc.hpp"
+#include "CArrayDec.hpp"
+#include "CDoubleHashing.hpp"
+
+
+
+TEST(CArrayTest, Exception) {
+	CArray<int, 10> dict;
+	EXPECT_THROW(dict[10], XOutOfBounds) << "Exception wird bei zu grossem Index nicht geworfen!";
+}
+
+TEST(CDoubleHashingTest, DoubleHashing) {
+	CDoubleHashing& hash = CDoubleHashing::getInstance();
+	EXPECT_EQ(static_cast<unsigned int>(10), hash.hash(3, 4, 11, 0));
+	EXPECT_EQ(static_cast<unsigned int>(5), hash.hash(3, 4, 11, 1));
+	EXPECT_EQ(static_cast<unsigned int>(0), hash.hash(3, 4, 11, 2));
+	EXPECT_EQ(static_cast<unsigned int>(6), hash.hash(3, 4, 11, 3));
+}
+
+TEST(CDoubleHashingTest, SimpleHashing) {
+	CDoubleHashing& hash = CDoubleHashing::getInstance();
+	EXPECT_EQ(static_cast<unsigned int>(4), hash.hash(3, 4, 7, 0));
+	EXPECT_EQ(static_cast<unsigned int>(1), hash.hash(1, 2, 7, 0));
+	EXPECT_EQ(static_cast<unsigned int>(0), hash.hash(2, 1, 7, 0));
+}
+
+int main(int argc, char** argv) {
+	/*CArrayEnc encoder;
+	CArrayDec decoder;
+
+	vector<unsigned int> lol = encoder.encode("abababababababababaaaaba");
+
+	for (vector<unsigned int>::iterator it = lol.begin(); it != lol.end(); it++) {
+		cout << *it << " ";
+	}
+	cout << endl;
+
+	cout << decoder.decode(lol) << std::endl;
+	cout << endl;
+
+	encoder.printSymbolTable(256);
+	decoder.printSymbolTable(256);
+ 	*/
+
+	testing::InitGoogleTest(&argc, argv);
+	int ret = RUN_ALL_TESTS();
+	return ret;
+
+	/*CArray<int,5> myArray;
+
+	for(int i = 0; i < 5; i++) {
+		myArray[i] = i;
+	}
+
+	CArray<int, 5> myArray2;
+	myArray2 = myArray;
+
+	std::cout << myArray[3] << " " << myArray2[3] << std::endl;
+
+	myArray2[3] = 2;
+
+	std::cout << myArray[3] << " " << myArray2[3] << std::endl;
+
+	std::cout << myArray[5] << std::endl;*/
+
+	/*cout << CEntry::getNumber() << std::endl;
+
+	CEntry entry1;
+
+	cout << CEntry::getNumber() << std::endl;
+
+	CEntry entry2;
+
+	cout << CEntry::getNumber() << std::endl;
+	*/
+	//return 0;
+}
